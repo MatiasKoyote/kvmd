@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Experimental audio fragment for the pinned uStreamer Janus plugin.
+# Merge these values into existing blocks; keep the existing video sink.
+# Confirm ALSA card IDs and the PiKVM video node on the actual image.
+acap: {
+    device = "hw:tc358743,0"
+    sampling_rate = 0
+    tc358743 = "/dev/kvmd-video"
+}
+aplay: {
+    device = "plughw:UAC2Gadget,0"
+}

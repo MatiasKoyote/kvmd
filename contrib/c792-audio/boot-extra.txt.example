@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Experimental Pi 4 + C792 audio fragment; see README.md before applying.
+# Add once in a section applying to this Pi 4 in the active boot config.
+# Preserve existing tc358743 video, dwc2 USB and other boot settings.
+dtoverlay=tc358743-audio
