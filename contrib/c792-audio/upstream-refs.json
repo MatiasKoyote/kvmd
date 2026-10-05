@@ -1,0 +1,17 @@
+{
+  "review_date": "2026-10-05",
+  "status": "experimental-integration-profile-hardware-validation-pending",
+  "repositories": {
+    "pikvm/kvmd": "42df955c17bf9003adfcce01a5b5a2ec488eaf65",
+    "pikvm/ustreamer": "0e64f1fedab4030c7bf58a287c462e21919c1d48",
+    "blikvm/blikvm-web-server": "cecede74ebe75239576c5eebf2eed7c4003a26fa",
+    "blikvm/blikvm-web-client": "7062dc335f572162ffed4ffdfa9fd6622d62807a"
+  },
+  "installed_versions_verified": false,
+  "target_board": "Raspberry Pi 4",
+  "capture_board": "C792 / TC358743",
+  "capture_pcm": "hw:tc358743,0",
+  "microphone_pcm": "plughw:UAC2Gadget,0",
+  "user_reported_blikvm_audio_working": true,
+  "microphone_end_to_end_verified": false
+}

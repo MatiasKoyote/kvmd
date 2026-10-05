@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Experimental fragment for the pinned KVMD version; merge into existing otg.
+# USB speakers are separate from HDMI capture and are not needed for this path.
+# This creates the USB function; browser microphone capture requires user action.
+otg:
+    devices:
+        audio:
+            enabled: true
+            start: true
+            speakers:
+                enabled: false
+            mic:
+                enabled: true
