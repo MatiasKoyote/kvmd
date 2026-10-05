@@ -1,6 +1,6 @@
 # PiKVM DIY: audio HDMI y micrófono USB con Raspberry Pi 4 + C792
 
-Estado: **base experimental de integración, pendiente de prueba en hardware**.
+Estado: **base experimental de integración, pendiente de prueba en hardware con PiKVM**.
 
 Este directorio prepara un fork de `pikvm/kvmd` para hacer reproducible el uso
 de audio bidireccional en un montaje Raspberry Pi 4 + C792/TC358743. Reutiliza
@@ -13,10 +13,12 @@ Los ejemplos deben contrastarse con las versiones instaladas antes de aplicarse.
 
 ## Punto de partida
 
-- El propietario del montaje confirmó que escucha audio usando BliKVM.
+- El propietario del montaje confirmó que escucha audio y que consiguió hacer
+  funcionar el micrófono usando BliKVM.
 - Con PiKVM ya había utilizado vídeo, teclado y mouse en la misma Pi 4/C792.
-- Todavía no hay una prueba confirmada del micrófono desde el navegador hasta
-  el ThinkPad, ni de ambas direcciones simultáneas con esta base.
+- La recepción de audio y el envío de micrófono con esta base de PiKVM siguen
+  pendientes de prueba en el montaje. Tampoco se ha documentado una prueba de
+  conversación simultánea ni las regresiones de esta integración.
 - Se mantendrá el acceso por LAN/WireGuard y el monitor conectado a la C792.
 
 La documentación oficial de PiKVM limita el soporte de audio a V3/V4 y excluye
@@ -110,13 +112,44 @@ La primera revisión del diagnóstico no incluía la ruta del paquete oficial
 [BliKVM v2.2.0-alpha](https://github.com/blikvm/blikvm/blob/1401a6a998a6a3aa3b1b0cc377a62dd8440c197c/script/packdeb.sh):
 `/mnt/exec/release/lib/pi/janus_configs/janus.plugin.ustreamer.jcfg`.
 Esa ruta ahora se consulta por defecto; la primera revisión también puede
-leerla mediante `--janus-config`. Falta obtener sus valores en este equipo:
-la ubicación en el empaquetado no acredita los parámetros instalados ni el
-commit del plugin en ejecución.
+leerla mediante `--janus-config`. Una lectura posterior en el equipo devolvió:
 
-También sigue pendiente comprobar que Windows enumere el micrófono USB y que
-su medidor responda a la voz enviada desde el navegador. La presencia del
-gadget en la Raspberry no demuestra por sí sola la recepción en el ThinkPad.
+| Campo de Janus | Valor leído en BliKVM |
+| --- | --- |
+| `acap.device` | `hw:CARD=tc358743` |
+| `acap.tc358743` | `/dev/video0` |
+| `aplay.device` | `plughw:UAC2Gadget,0` |
+| `video.sink` | `demo::ustreamer::h264` |
+
+El diagnóstico no encontró claves duplicadas. Estos valores proceden del
+archivo en disco; `effective_config_resolved=false` indica que el inventario
+no resuelve la configuración efectiva del proceso. Tampoco identifica el
+commit del plugin instalado. La sintaxis `hw:CARD=tc358743` pertenece a esta
+referencia de BliKVM y no se traslada automáticamente al ejemplo de PiKVM:
+hay que contrastar la detección del dispositivo en cada versión del plugin.
+
+### Resultado funcional del micrófono en BliKVM (2026-10-05)
+
+Windows/Teams mostró el dispositivo `Microphone (Source/Sink)`. Durante una
+prueba de micrófono activa en Windows, `Playback Rate` se mantuvo en `48000`
+y avanzaron tanto `hw_ptr` como `appl_ptr`. Los controles del gadget mostraron
+`PCM Playback Switch=on` y `PCM Playback Volume=100`, equivalente a `0 dB` en
+su rango. Estas lecturas documentan actividad del transporte y sus controles;
+por sí solas no acreditan que los datos contengan voz.
+
+Después, el propietario comunicó que el micrófono ya funcionaba en BliKVM.
+Se registra como **confirmación funcional del usuario en BliKVM**. El usuario
+señaló como posible interferencia el micrófono de Steam utilizado para
+retransmitir; la causa exacta y la acción que la resolvió no quedaron aisladas
+en una prueba controlada. No se atribuye el problema a un defecto demostrado
+de Steam, Janus o ALSA.
+
+Para reproducir la referencia, anotar el micrófono local seleccionado en el
+navegador y elegir el micrófono USB del KVM en la aplicación del ThinkPad.
+Esta confirmación no cambia los marcadores `false` del inventario automático:
+el script sigue sin realizar pruebas de sonido. La validación de audio y
+micrófono en PiKVM, la conversación simultánea y las regresiones siguen
+pendientes.
 
 Conservar también la versión de BliKVM que muestra su interfaz. En la imagen
 PiKVM que se destine a pruebas, repetir la lectura:
