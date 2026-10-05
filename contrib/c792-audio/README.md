@@ -77,6 +77,47 @@ Los datos de Janus se limitan a los parámetros de medios admitidos. El informe
 es inventario: no certifica que se escuche sonido ni que el micrófono llegue al
 host. La observación del usuario se registra por separado.
 
+### Referencia recibida de BliKVM (2026-10-05)
+
+El inventario ejecutado en el montaje aporta estos datos. Son observaciones de
+BliKVM, no resultados de una prueba de esta base sobre PiKVM.
+
+| Componente | Dato observado |
+| --- | --- |
+| Plataforma | Raspberry Pi 4 Model B Rev 1.4, `aarch64` |
+| Paquetes | `blikvm 2.2.0-alpha`, `alsa-utils 1.2.8-1+rpt1` |
+| Kernel | `6.12.34+rpt-rpi-v8` |
+| Arranque | `dtoverlay=tc358743-audio` sin comentar en `/boot/firmware/config.txt` |
+| Captura ALSA | `tc358743`, tarjeta 1, dispositivo 0 |
+| Reproducción ALSA hacia USB | `UAC2Gadget`, tarjeta 4, dispositivo 0 |
+| Función USB | `g1/uac2.usb0`, enlazada a una configuración y vinculada al UDC |
+
+El gadget informa `p_chmask=3`, `p_srate=48000` y `p_ssize=2`: dos canales,
+48 kHz y 16 bits en la dirección de micrófono del host. Coincide con el perfil
+previsto para KVMD. `c_chmask=0` desactiva la dirección de altavoces USB; su
+`c_srate=64000` no es la frecuencia del HDMI ni un ajuste que deba corregirse.
+Los índices de tarjetas anteriores describen esa ejecución, no identificadores
+que deban fijarse en la configuración.
+
+Las lecturas principales se completaron sin errores de permisos. La ausencia
+de archivos y enlaces propios de KVMD es coherente con estar ejecutando BliKVM.
+La consulta conjunta de paquetes recuperó las versiones indicadas y devolvió
+código 1, compatible con que algunos de los nombres consultados estén ausentes.
+Los marcadores de verificación en
+`false` siguen significando que el inventario no realiza pruebas de sonido.
+
+La primera revisión del diagnóstico no incluía la ruta del paquete oficial
+[BliKVM v2.2.0-alpha](https://github.com/blikvm/blikvm/blob/1401a6a998a6a3aa3b1b0cc377a62dd8440c197c/script/packdeb.sh):
+`/mnt/exec/release/lib/pi/janus_configs/janus.plugin.ustreamer.jcfg`.
+Esa ruta ahora se consulta por defecto; la primera revisión también puede
+leerla mediante `--janus-config`. Falta obtener sus valores en este equipo:
+la ubicación en el empaquetado no acredita los parámetros instalados ni el
+commit del plugin en ejecución.
+
+También sigue pendiente comprobar que Windows enumere el micrófono USB y que
+su medidor responda a la voz enviada desde el navegador. La presencia del
+gadget en la Raspberry no demuestra por sí sola la recepción en el ThinkPad.
+
 Conservar también la versión de BliKVM que muestra su interfaz. En la imagen
 PiKVM que se destine a pruebas, repetir la lectura:
 

@@ -38,6 +38,7 @@ JANUS_PATHS = (
     "/opt/janus/etc/janus/janus.plugin.ustreamer.jcfg",
     "/opt/janus/lib/janus/configs/janus.plugin.ustreamer.jcfg",
     "/usr/blikvm/lib/pi/janus_configs/janus.plugin.ustreamer.jcfg",
+    "/mnt/exec/release/lib/pi/janus_configs/janus.plugin.ustreamer.jcfg",
 )
 PACKAGE_NAMES = (
     "kvmd", "ustreamer", "janus-gateway-pikvm", "janus-gateway", "janus",
